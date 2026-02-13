@@ -1,0 +1,6 @@
+
+.bg-astraea { background-image: url('http://googleusercontent.com/image_generation_content/0.png'); background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.5; z-index: 0; }
+.glass { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); }
+.char-seraphina { filter: drop-shadow(0 0 50px rgba(99, 102, 241, 0.4)); }
+.feed-item { animation: slideIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; opacity: 0; }
+@keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
