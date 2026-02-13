@@ -1,136 +1,174 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELYSIA // SYSTEM V5.0</title>
+    <title>ELYSIA // SOVEREIGN OS</title>
+
+    <!-- TAILWIND & FONTS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+
+    <!-- ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body
-    class="bg-black text-cyan-50 font-rajdhani overflow-hidden h-screen w-screen selection:bg-cyan-500 selection:text-black">
+    class="bg-black text-gray-100 font-rajdhani overflow-hidden h-screen w-screen selection:bg-amber-500 selection:text-black">
 
-    <!-- Background Layers -->
+    <!-- BACKGROUND -->
     <div
-        class="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1535868463750-c78d9543614f?q=80&w=2676&auto=format&fit=crop')] bg-cover bg-center opacity-20 z-0">
+        class="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1614728853911-ec9092c28ef0?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center opacity-10 z-0">
     </div>
-    <div class="fixed inset-0 bg-gradient-to-t from-black via-black/80 to-transparent z-0"></div>
+    <div class="fixed inset-0 bg-gradient-to-b from-black/80 via-black/90 to-black z-0"></div>
     <div class="scanline z-50 pointer-events-none fixed inset-0"></div>
 
-    <!-- Auth Layer -->
-    <div id="auth-layer"
-        class="absolute inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center backdrop-blur-xl transition-all duration-1000">
-        <div class="relative">
-            <h1 class="text-6xl md:text-8xl font-orbitron font-black tracking-[0.2em] text-cyan-400 glitch-text mb-4"
-                data-text="ELYSIA">ELYSIA</h1>
-            <div
-                class="h-1 w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent shadow-[0_0_20px_rgba(6,182,212,0.8)]">
-            </div>
-        </div>
-        <p class="mt-6 text-cyan-300/60 tracking-[0.5em] text-sm font-bold uppercase animate-pulse">System Offline //
-            Awaiting Input</p>
+    <!-- MAIN CONTAINER -->
+    <div id="app-container" class="relative z-10 w-full h-full flex opacity-0 transition-opacity duration-1000">
 
-        <button onclick="Elysia.init()"
-            class="group mt-12 relative px-12 py-4 overflow-hidden rounded-none border border-cyan-500/30 bg-black/50 hover:bg-cyan-900/20 transition-all duration-300">
-            <div
-                class="absolute inset-0 w-0 bg-cyan-500/10 transition-all duration-[250ms] ease-out group-hover:w-full">
-            </div>
-            <span
-                class="relative text-cyan-400 font-orbitron tracking-[0.2em] text-lg group-hover:text-cyan-300">INITIALIZE
-                V5.0</span>
-            <div class="absolute bottom-0 right-0 w-2 h-2 bg-cyan-500"></div>
-            <div class="absolute top-0 left-0 w-2 h-2 bg-cyan-500"></div>
-        </button>
-    </div>
-
-    <!-- Main HUD -->
-    <div id="main-interface"
-        class="relative z-10 w-full h-full flex p-4 md:p-8 gap-6 opacity-0 scale-95 transition-all duration-1000">
-
-        <!-- Left Panel: Character & Status -->
-        <div class="w-full md:w-2/3 flex flex-col justify-between relative pl-4">
-            <!-- HUD Header -->
-            <div class="flex justify-between items-start border-b border-cyan-500/20 pb-4 mb-4">
-                <div class="hud-panel p-4 rounded-br-2xl border-l-4 border-cyan-500">
-                    <p class="text-[10px] tracking-[0.3em] text-cyan-400/80 font-bold mb-1 uppercase">Aether Capital</p>
-                    <p id="aether-val"
-                        class="text-5xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500 drop-shadow-[0_0_10px_rgba(6,182,212,0.5)]">
-                        0.000</p>
+        <!-- SIDEBAR -->
+        <nav class="w-24 md:w-64 h-full border-r border-white/10 glass-panel flex flex-col justify-between p-4 z-20">
+            <div>
+                <div class="mb-10 pl-2 border-l-4 border-amber-500">
+                    <h1 class="font-cinzel text-2xl md:text-3xl font-bold text-amber-500 tracking-wider">ELYSIA</h1>
+                    <p class="text-[10px] text-gray-500 tracking-[0.4em] uppercase">Sovereign OS</p>
                 </div>
-                <div class="text-right">
-                    <p class="text-[10px] tracking-[0.5em] text-cyan-500/40 uppercase font-orbitron">Sovereign_OS_Stable
-                    </p>
-                    <p class="text-xs text-cyan-300/60 mt-1">SECURE CONNECTION ESTABLISHED</p>
-                </div>
-            </div>
 
-            <!-- Character Image (Hologram) -->
-            <div class="absolute inset-0 flex items-end justify-center pointer-events-none z-0 overflow-hidden">
-                <img src="http://googleusercontent.com/image_generation_content/1.png"
-                    class="h-[85vh] object-contain drop-shadow-[0_0_30px_rgba(100,200,255,0.3)] opacity-0 transition-opacity duration-1000 mask-image-gradient"
-                    id="char-img">
-            </div>
-
-            <!-- Dialogue Box -->
-            <div class="z-10 w-full max-w-3xl hud-glass p-8 border-l-2 border-r-2 border-cyan-500/30 relative">
-                <div
-                    class="absolute -top-3 left-4 bg-black px-2 text-cyan-500 text-xs tracking-[0.2em] font-bold border border-cyan-500/30">
-                    SERAPHINA.AI</div>
-                <p id="speech"
-                    class="text-2xl md:text-3xl font-light leading-relaxed text-cyan-100 tracking-wide drop-shadow-md">
-                    ...</p>
-                <!-- Decorative lines -->
-                <div class="absolute bottom-0 right-0 w-16 h-[2px] bg-cyan-500"></div>
-                <div class="absolute bottom-0 right-0 w-[2px] h-4 bg-cyan-500"></div>
-            </div>
-        </div>
-
-        <!-- Right Panel: Feed & System -->
-        <div class="hidden md:flex flex-col w-1/3 h-full gap-4">
-            <!-- Feed Panel -->
-            <div class="flex-1 hud-glass border border-cyan-500/20 flex flex-col overflow-hidden relative">
-                <div class="p-4 border-b border-cyan-500/20 bg-cyan-950/20 flex justify-between items-center">
-                    <h2 class="text-sm font-orbitron tracking-[0.2em] text-cyan-400 uppercase">Global Feed</h2>
-                    <div class="flex gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_#22c55e]"></span>
-                        <span class="text-[10px] text-green-400">ONLINE</span>
-                    </div>
-                </div>
-                <div id="feed" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
-                    <!-- Feed items will be injected here -->
-                </div>
-            </div>
-
-            <!-- System Status Panel -->
-            <div
-                class="h-auto p-6 bg-black/60 border border-red-500/30 backdrop-blur-md flex flex-col justify-between relative overflow-hidden group">
-                <div class="absolute inset-0 bg-red-900/5 group-hover:bg-red-900/10 transition-colors"></div>
-
-                <div class="z-10 space-y-4">
-                    <div class="flex justify-between items-end">
-                        <span class="text-xs font-bold uppercase tracking-widest text-red-400">Entropy Level</span>
-                        <span id="ent"
-                            class="text-2xl font-orbitron text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.6)]">100%</span>
-                    </div>
-
-                    <div class="h-2 bg-red-900/30 rounded-full overflow-hidden border border-red-500/20">
-                        <div id="ent-bar"
-                            class="h-full bg-gradient-to-r from-red-600 to-orange-500 shadow-[0_0_15px_rgba(239,68,68,0.8)] w-full transition-all duration-700">
-                        </div>
-                    </div>
-
-                    <button onclick="Elysia.battle()"
-                        class="w-full mt-2 py-4 border border-red-500/50 text-red-400 hover:bg-red-500 hover:text-black font-orbitron tracking-[0.2em] transition-all duration-300 uppercase text-sm font-bold shadow-[0_0_10px_rgba(220,38,38,0.2)] hover:shadow-[0_0_20px_rgba(220,38,38,0.6)]">
-                        Execute Protocol
+                <div class="space-y-2">
+                    <button onclick="Elysia.ui.switchTab('dashboard')"
+                        class="nav-btn group w-full text-left p-3 rounded-lg hover:bg-white/5 transition-all active-tab"
+                        data-tab="dashboard">
+                        <i data-lucide="layout-dashboard"
+                            class="inline w-5 h-5 mr-2 text-gray-400 group-hover:text-amber-400"></i>
+                        <span
+                            class="hidden md:inline text-sm font-bold tracking-widest text-gray-400 group-hover:text-white transition-colors">DASHBOARD</span>
+                    </button>
+                    <button onclick="Elysia.ui.switchTab('social')"
+                        class="nav-btn group w-full text-left p-3 rounded-lg hover:bg-white/5 transition-all"
+                        data-tab="social">
+                        <i data-lucide="users" class="inline w-5 h-5 mr-2 text-gray-400 group-hover:text-amber-400"></i>
+                        <span
+                            class="hidden md:inline text-sm font-bold tracking-widest text-gray-400 group-hover:text-white transition-colors">THE
+                            FEED</span>
+                    </button>
+                    <button onclick="Elysia.ui.switchTab('market')"
+                        class="nav-btn group w-full text-left p-3 rounded-lg hover:bg-white/5 transition-all"
+                        data-tab="market">
+                        <i data-lucide="gem" class="inline w-5 h-5 mr-2 text-gray-400 group-hover:text-amber-400"></i>
+                        <span
+                            class="hidden md:inline text-sm font-bold tracking-widest text-gray-400 group-hover:text-white transition-colors">MARKET</span>
                     </button>
                 </div>
             </div>
-        </div>
+
+            <div class="text-center md:text-left">
+                <div class="md:flex items-center gap-2 mb-2">
+                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]"></div>
+                    <span class="hidden md:inline text-[10px] text-green-500 uppercase tracking-widest">System
+                        Online</span>
+                </div>
+                <p class="text-[9px] text-gray-600 font-mono">v5.1.0-ALPHA</p>
+            </div>
+        </nav>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-1 flex flex-col relative overflow-hidden">
+
+            <!-- HEADER HUD -->
+            <header class="h-20 border-b border-white/10 glass-panel flex justify-between items-center px-8 z-20">
+                <div class="flex items-center gap-8">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-amber-500/60 uppercase tracking-widest">Aether Reserve</span>
+                        <div class="flex items-baseline gap-1">
+                            <span id="display-aether"
+                                class="font-cinzel text-2xl text-amber-400 font-bold drop-shadow-[0_0_10px_rgba(251,191,36,0.5)]">0.00</span>
+                            <span class="text-[10px] text-amber-500/40">ATH</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-8">
+                    <div class="w-48">
+                        <div class="flex justify-between text-[10px] text-gray-400 mb-1 tracking-wider uppercase">
+                            <span>System Entropy</span>
+                            <span id="display-entropy">0%</span>
+                        </div>
+                        <div class="h-1 bg-white/10 rounded-full overflow-hidden">
+                            <div id="bar-entropy"
+                                class="h-full bg-red-500 w-0 transition-all duration-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="Elysia.economy.purgeEntropy()"
+                        class="p-2 border border-red-500/30 rounded hover:bg-red-500/10 transition-colors text-red-400 hover:text-red-300">
+                        <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- VIEWS -->
+            <div id="view-dashboard"
+                class="view-section absolute inset-0 top-20 p-8 overflow-y-auto custom-scrollbar flex gap-6">
+                <!-- HERO SECTION -->
+                <div class="flex-1 flex flex-col justify-center items-center relative group">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
+                    </div>
+                    <div class="relative z-10 text-center space-y-4">
+                        <div class="inline-block p-1 border border-amber-500/30 rounded-full mb-4">
+                            <div
+                                class="w-32 h-32 rounded-full overflow-hidden border-2 border-amber-500 shadow-[0_0_30px_rgba(245,158,11,0.3)]">
+                                <img src="http://googleusercontent.com/image_generation_content/1.png"
+                                    class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <h2 class="font-cinzel text-4xl text-white font-bold tracking-widest drop-shadow-lg">
+                            SERAPHINA<span class="text-amber-500">.AI</span></h2>
+                        <div class="max-w-xl mx-auto glass-panel p-6 border-l-2 border-amber-500">
+                            <p id="seraphina-speech" class="text-lg text-gray-300 font-light leading-relaxed italic">
+                                "Initializing Sovereign Protocol... We await your command, Master."</p>
+                        </div>
+                        <div class="pt-8">
+                            <button onclick="Elysia.economy.collectTribute()"
+                                class="px-8 py-3 bg-amber-500 text-black font-cinzel font-bold tracking-[0.2em] hover:bg-white transition-all shadow-[0_0_20px_rgba(245,158,11,0.5)] clip-corner">
+                                COLLECT TRIBUTE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-social"
+                class="view-section absolute inset-0 top-20 p-8 overflow-y-auto custom-scrollbar hidden">
+                <div class="max-w-3xl mx-auto space-y-4" id="social-feed-container">
+                    <!-- Feed items injected via JS -->
+                </div>
+            </div>
+
+            <div id="view-market"
+                class="view-section absolute inset-0 top-20 p-8 overflow-y-auto custom-scrollbar hidden flex justify-center items-center">
+                <div class="text-center space-y-4 opacity-50">
+                    <i data-lucide="lock" class="w-16 h-16 mx-auto text-gray-500"></i>
+                    <h3 class="font-cinzel text-2xl text-gray-400">MARKET LOCKED</h3>
+                    <p class="text-sm font-rajdhani tracking-widest">Requires 1,000 Aether to unlock Level 2 Access.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- INITIALIZATION OVERLAY -->
+    <div id="init-screen"
+        class="fixed inset-0 z-50 bg-black flex flex-col justify-center items-center cursor-pointer transition-opacity duration-1000"
+        onclick="Elysia.core.boot()">
+        <h1
+            class="font-cinzel text-6xl text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-600 font-bold tracking-[0.5em] animate-pulse">
+            ELYSIA</h1>
+        <p class="mt-4 text-xs tracking-[1em] text-gray-500 uppercase">Click to Initialize</p>
     </div>
 
     <script src="app.js"></script>
