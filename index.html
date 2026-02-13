@@ -1,74 +1,70 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elysia: The Sovereign - Seraphina</title>
+    <title>Elysia V4.0 - Sovereign OS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;700&display=swap');
-        body { font-family: 'Noto Sans KR', sans-serif; background: #000; margin: 0; overflow: hidden; color: white; }
-        .bg-astraea { 
-            background-image: url('https://raw.githubusercontent.com/freiheit88/elysia-project/main/bg-astraea.png'); /* 이미지 업로드 전까진 제가 생성한 URL로 대체 가능 */
-            background-size: cover; background-position: center; position: absolute; inset: 0; opacity: 0.5; z-index: 0;
-        }
-        .char-layer { position: absolute; bottom: -5%; right: -5%; height: 95vh; z-index: 10; transition: all 1.5s ease; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { font-family: 'Noto Sans KR', sans-serif; background: #000; color: #fff; overflow: hidden; }
+        .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .bg-astraea { background: url('http://googleusercontent.com/image_generation_content/0.png') center/cover; position: absolute; inset: 0; opacity: 0.4; }
     </style>
 </head>
-<body>
-    <div class="bg-astraea" style="background-image: url('http://googleusercontent.com/image_generation_content/0.png')"></div>
-    <img id="seraphina" src="http://googleusercontent.com/image_generation_content/1.png" class="char-layer opacity-0">
-
-    <div id="overlay" class="absolute inset-0 z-[100] bg-black flex items-center justify-center">
-        <button onclick="startSystem()" class="px-12 py-5 border border-indigo-500 text-indigo-400 tracking-[1em] hover:bg-indigo-500/20 transition-all font-bold">ACCESS SYSTEM</button>
+<body class="relative h-screen flex flex-col items-center justify-center p-12">
+    <div class="bg-astraea"></div>
+    <div id="boot" class="absolute inset-0 z-[100] bg-black flex items-center justify-center transition-opacity duration-1000">
+        <button onclick="Elysia.init()" class="px-16 py-6 border border-indigo-500 text-indigo-400 tracking-[1em] font-black hover:bg-indigo-500/10 transition-all">INITIALIZE V4.0</button>
     </div>
 
-    <div id="ui" class="relative z-20 h-screen p-12 flex flex-col justify-between opacity-0 transition-opacity duration-1000">
-        <div class="flex justify-between w-full max-w-4xl mx-auto">
-            <div class="w-1/3 text-xs tracking-widest uppercase">Master: <span id="mhp">100</span>% <div class="h-1 bg-indigo-600 mt-1 transition-all" id="mbar"></div></div>
-            <div class="w-1/3 text-xs tracking-widest uppercase text-right">System: <span id="shp">100</span>% <div class="h-1 bg-rose-600 mt-1 transition-all" id="sbar"></div></div>
+    <div class="relative z-10 w-full max-w-5xl flex justify-between mb-10">
+        <div class="glass p-8 rounded-3xl w-72 shadow-2xl">
+            <p class="text-[10px] tracking-widest text-indigo-400 font-bold mb-1">AETHER CAPITAL (UBI)</p>
+            <p id="ae-val" class="text-4xl font-black tracking-tighter">0.000</p>
         </div>
+        <div class="text-right glass p-8 rounded-3xl w-72 shadow-2xl">
+            <p class="text-[10px] tracking-widest text-rose-400 font-bold mb-1">SYSTEM ENTROPY</p>
+            <p id="en-val" class="text-4xl font-black tracking-tighter text-rose-500">100%</p>
+        </div>
+    </div>
 
-        <div class="flex flex-col items-center gap-8">
-            <div class="flex gap-10">
-                <div id="d1" class="w-24 h-24 glass flex items-center justify-center text-5xl font-bold rounded-3xl">1</div>
-                <div id="d2" class="w-24 h-24 glass flex items-center justify-center text-5xl font-bold rounded-3xl text-rose-500">1</div>
-            </div>
-            <button onclick="battle()" class="px-16 py-4 bg-indigo-700 rounded-full font-bold tracking-widest hover:scale-110 transition-transform">EXECUTE</button>
+    <div class="relative z-10 glass p-10 rounded-[40px] w-full max-w-4xl border-l-8 border-indigo-600 shadow-2xl">
+        <h2 class="text-xs tracking-[0.5em] text-indigo-300 font-bold mb-4 uppercase">Seraphina Interface</h2>
+        <p id="sp-txt" class="text-3xl font-extralight leading-snug mb-10">마스터, 당신의 우월성이 이 세계의 질서를 재정의할 것입니다.</p>
+        <div class="flex justify-center gap-8 mb-10">
+            <div id="d1" class="w-24 h-24 glass flex items-center justify-center text-5xl font-bold rounded-2xl shadow-inner">1</div>
+            <div id="d2" class="w-24 h-24 glass flex items-center justify-center text-5xl font-bold rounded-2xl shadow-inner text-rose-500">1</div>
         </div>
-
-        <div class="w-full max-w-3xl mx-auto glass p-8 rounded-3xl border-l-4 border-indigo-500">
-            <p id="msg" class="text-2xl font-extralight tracking-tight">...</p>
-        </div>
+        <button onclick="Elysia.battle()" class="w-full py-6 bg-indigo-600/20 hover:bg-indigo-600 border border-indigo-500 rounded-full text-xl font-bold tracking-[0.5em] transition-all transform active:scale-95">EXECUTE SOVEREIGN BATTLE</button>
     </div>
 
     <script>
-        const synth = window.speechSynthesis;
-        function speak(t) {
-            synth.cancel();
-            const u = new SpeechSynthesisUtterance(t); u.lang = 'ko-KR'; u.rate = 1.0;
-            synth.speak(u); document.getElementById('msg').innerText = t;
-        }
-
-        function startSystem() {
-            document.getElementById('overlay').remove();
-            document.getElementById('ui').style.opacity = '1';
-            document.getElementById('seraphina').style.opacity = '1';
-            speak("시스템 동기화 완료. 마스터, 세라피나가 당신의 의지를 따릅니다.");
-        }
-
-        function battle() {
-            const r1 = Math.floor(Math.random()*6)+1, r2 = Math.floor(Math.random()*6)+1;
-            document.getElementById('d1').innerText = r1; document.getElementById('d2').innerText = r2;
-            if(r1 > r2) { 
-                speak("승리하셨군요. 시스템 엔트로피를 정화했습니다."); 
-                document.getElementById('shp').innerText -= 20;
-            } else if(r1 < r2) {
-                speak("간섭이 발생했습니다. 주의가 필요합니다.");
-                document.getElementById('mhp').innerText -= 15;
-            } else { speak("에너지가 충돌하며 상쇄되었습니다."); }
-        }
+        const Elysia = {
+            aether: 0, entropy: 100,
+            init() {
+                document.getElementById('boot').style.opacity = '0';
+                setTimeout(() => { document.getElementById('boot').remove(); this.speak("시스템 동기화 완료. 마스터, 엘리시아의 통치권을 행사하십시오."); }, 1000);
+                setInterval(() => { this.aether += 0.001; document.getElementById('ae-val').innerText = this.aether.toFixed(3); }, 1000);
+            },
+            speak(t) {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(t); u.lang='ko-KR'; u.rate=0.9;
+                window.speechSynthesis.speak(u); document.getElementById('sp-txt').innerText = t;
+            },
+            battle() {
+                const r1 = Math.floor(Math.random()*6)+1, r2 = Math.floor(Math.random()*6)+1;
+                document.getElementById('d1').innerText = r1; document.getElementById('d2').innerText = r2;
+                if(r1 >= r2) {
+                    this.aether += 10; this.entropy -= 5;
+                    this.speak("승리하셨습니다. 시스템 엔트로피가 감소하며 마스터의 평판이 상승합니다.");
+                } else {
+                    this.speak("일시적인 간섭입니다. 당신의 우월함은 이런 사소한 시련에 굴하지 않습니다.");
+                }
+                document.getElementById('en-val').innerText = this.entropy + "%";
+            }
+        };
     </script>
 </body>
 </html>
+    
