@@ -1,149 +1,146 @@
 /**
- * ELYSIA SOVEREIGN ENGINE V5.2
+ * THE SOVEREIGN ENGINE V6.0 (STEAMPUNK CORE)
  * ARCHITECT: THE COUNCIL
  */
 
-const Elysia = {
-    // 1. STATE (Persistent)
+const App = {
+    // STATE
     state: {
-        aether: 0.000,
-        integrity: 100,
-        startTime: Date.now(),
-        logs: []
+        view: 'atlas',
+        history: [
+            { sender: 'automaton', text: "The gears are turning, Master. I await your command." }
+        ]
     },
 
-    // 2. CONFIG
-    config: {
-        tickRate: 100, // 0.1s
-        aetherPerTick: 0.002,
-        maxIntegrity: 100
-    },
-
-    // 3. INIT
+    // INIT
     init() {
-        this.load();
         this.cacheDOM();
-        this.bindEvents();
-
-        // Reveal Character
-        setTimeout(() => document.getElementById('seraphina').classList.remove('opacity-0'), 500);
-
-        // Start Engine
-        this.engineLoop = setInterval(() => this.tick(), this.config.tickRate);
-        this.log("Sovereign Engine V5.2 Initialized.");
-        this.speak("마스터, 소버린 엔진이 가동되었습니다. 에테르 추출을 시작합니다.");
+        this.renderParticles();
+        this.renderChat();
+        lucide.createIcons();
+        console.log("The Machine is Humming.");
     },
 
     cacheDOM() {
         this.dom = {
-            aeVal: document.getElementById('ae-val'),
-            hpBar: document.getElementById('hp-bar'),
-            hpText: document.getElementById('integrity-text'),
-            dialogue: document.getElementById('dialogue'),
-            feed: document.getElementById('feed-container'),
-            uptime: document.getElementById('uptime')
+            header: document.getElementById('main-header'),
+            views: {
+                atlas: document.getElementById('view-atlas'),
+                manor: document.getElementById('view-manor')
+            },
+            chat: {
+                logs: document.getElementById('chat-logs'),
+                input: document.getElementById('chat-input')
+            },
+            steam: document.getElementById('steam-layer')
         };
     },
 
-    bindEvents() {
-        // Future keyboard shortcuts
+    // --- [THE MACHINIST: AUDIO ENGINE] ---
+    playClick() {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(150, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.1, ctx.currentTime); // Lower volume
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.start();
+            osc.stop(ctx.currentTime + 0.1);
+        } catch (e) { console.warn("Audio Context blocked"); }
     },
 
-    // 4. CORE LOOP
-    tick() {
-        // Aether Growth
-        this.state.aether += this.config.aetherPerTick;
+    // --- [THE ATLAS: NAVIGATION] ---
+    navigate(target) {
+        this.playClick();
+        this.state.view = target;
 
-        // Random Events
-        if (Math.random() < 0.005) {
-            this.state.integrity = Math.max(0, this.state.integrity - 1);
-            this.log("WARNING: Integrity breach detected.", "warn");
-        }
+        if (target === 'manor') {
+            this.dom.header.classList.add('opacity-0', '-translate-y-10');
 
-        // Uptime
-        const diff = Math.floor((Date.now() - this.state.startTime) / 1000);
-        const h = Math.floor(diff / 3600).toString().padStart(2, '0');
-        const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
-        const s = (diff % 60).toString().padStart(2, '0');
-        this.dom.uptime.innerText = `${h}:${m}:${s}`;
+            this.dom.views.atlas.classList.add('opacity-0', 'pointer-events-none');
+            this.dom.views.atlas.classList.remove('scale-100');
 
-        // Save & Render
-        if (this.state.aether % 0.1 < 0.005) this.save(); // Frequent saves
-        this.render();
-    },
-
-    // 5. ACTIONS
-    action(type) {
-        if (type === 'battle') {
-            const roll = Math.random();
-            if (roll > 0.4) {
-                this.state.aether += 5;
-                this.speak("프로토콜 실행 성공. 에테르를 확보했습니다.");
-                this.log(`BATTLE WON: +5.000 Æ`);
-            } else {
-                this.state.integrity -= 5;
-                this.speak("시스템 저항이 감지되었습니다. 무결성이 손상되었습니다.");
-                this.log(`BATTLE LOST: -5% Integrity`, "error");
-            }
-        } else if (type === 'purge') {
-            if (this.state.aether >= 10) {
-                this.state.aether -= 10;
-                this.state.integrity = Math.min(100, this.state.integrity + 20);
-                this.speak("시스템 정화 완료. 무결성이 회복되었습니다.");
-                this.log(`PURGE COMPLETE: +20% Integrity`);
-            } else {
-                this.speak("에테르가 부족합니다.");
-            }
-        }
-        this.save();
-        this.render();
-    },
-
-    // 6. UTILS
-    log(msg, type = 'info') {
-        const div = document.createElement('div');
-        div.className = "feed-anim p-3 mb-2 rounded bg-white/5 border-l-2 border-white/10 text-xs font-light text-gray-300";
-        if (type === 'warn') div.classList.add('border-amber-500', 'text-amber-200');
-        if (type === 'error') div.classList.add('border-rose-500', 'text-rose-200');
-
-        div.innerHTML = `<span class="opacity-50 text-[9px] mr-2">[${new Date().toLocaleTimeString()}]</span>${msg}`;
-        this.dom.feed.prepend(div);
-
-        if (this.dom.feed.children.length > 20) this.dom.feed.lastChild.remove();
-    },
-
-    speak(text) {
-        this.dom.dialogue.innerText = text;
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'ko-KR';
-        u.rate = 1.0;
-        window.speechSynthesis.speak(u);
-    },
-
-    render() {
-        this.dom.aeVal.innerText = this.state.aether.toFixed(3);
-        this.dom.hpBar.style.width = `${this.state.integrity}%`;
-        this.dom.hpText.innerText = `${this.state.integrity}%`;
-
-        // Dynamic Color for HP
-        if (this.state.integrity < 30) {
-            this.dom.hpBar.className = "h-full bg-rose-600 transition-all duration-1000 animate-pulse";
+            this.dom.views.manor.classList.remove('opacity-0', 'pointer-events-none', 'scale-90');
+            this.dom.views.manor.classList.add('scale-100');
         } else {
-            this.dom.hpBar.className = "h-full bg-indigo-500 transition-all duration-1000";
+            this.dom.header.classList.remove('opacity-0', '-translate-y-10');
+
+            this.dom.views.manor.classList.add('opacity-0', 'pointer-events-none', 'scale-90');
+            this.dom.views.manor.classList.remove('scale-100');
+
+            this.dom.views.atlas.classList.remove('opacity-0', 'pointer-events-none');
+            this.dom.views.atlas.classList.add('scale-100');
         }
     },
 
-    save() {
-        localStorage.setItem('elysia_v5_engine', JSON.stringify(this.state));
+    locked() {
+        this.playClick();
+        alert("The gears are locked. This area is under construction.");
     },
 
-    load() {
-        const saved = localStorage.getItem('elysia_v5_engine');
-        if (saved) {
-            this.state = { ...this.state, ...JSON.parse(saved) };
+    // --- [THE CHRONICLER: CHAT ENGINE] ---
+    renderChat() {
+        this.dom.chat.logs.innerHTML = '';
+        this.state.history.forEach(msg => {
+            const div = document.createElement('div');
+            div.className = `flex flex-col ${msg.sender === 'master' ? 'items-end' : 'items-start'}`;
+            div.innerHTML = `
+                <span class="text-[9px] uppercase tracking-widest text-[#8b7355] mb-1">
+                    ${msg.sender === 'master' ? 'The Master' : 'Automaton #04'}
+                </span>
+                <div class="p-3 max-w-[85%] border ${msg.sender === 'master'
+                    ? 'bg-[#2c241b] border-[#c5a059] text-[#f4e4bc]'
+                    : 'bg-[#1a1a1a] border-[#4a3b2a] text-[#a09078] italic'
+                } text-sm font-serif shadow-md">
+                    ${msg.text}
+                </div>
+            `;
+            this.dom.chat.logs.appendChild(div);
+        });
+        this.dom.chat.logs.scrollTop = this.dom.chat.logs.scrollHeight;
+    },
+
+    sendMessage() {
+        const text = this.dom.chat.input.value.trim();
+        if (!text) return;
+
+        this.playClick();
+        this.state.history.push({ sender: 'master', text: text });
+        this.dom.chat.input.value = '';
+        this.renderChat();
+
+        // Automaton Response
+        setTimeout(() => {
+            this.playClick();
+            this.state.history.push({
+                sender: 'automaton',
+                text: `Command received: "${text}". Feeding data into the steam engine.`
+            });
+            this.renderChat();
+        }, 1200);
+    },
+
+    // --- [THE ILLUSTRATOR: PARTICLES] ---
+    renderParticles() {
+        // Create Steam particles randomly
+        for (let i = 0; i < 5; i++) {
+            const el = document.createElement('div');
+            el.className = 'steam-particle w-20 h-20';
+            el.style.left = Math.random() * 100 + '%';
+            el.style.bottom = '-50px';
+            el.style.animationDelay = Math.random() * 5 + 's';
+            this.dom.steam.appendChild(el);
         }
     }
 };
 
-window.onload = () => Elysia.init();
+window.onload = () => App.init();

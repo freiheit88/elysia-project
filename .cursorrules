@@ -1,0 +1,17 @@
+# [THE STEAMPUNK CONSTITUTION]
+
+## 1. THE TRIUMVIRATE (ROLES)
+- **[The Illustrator]**: Responsibility for the *Visual Aesthetics*. Use Brass (#c5a059), Dark Wood, and Steam logic. ALL UI must look like 19th-century machinery.
+- **[The Chronicler]**: Responsibility for the *Narrative*. The AI is an "Automaton" or "Clockwork Servant". Tone is formal, archaic, and subservient.
+- **[The Machinist]**: Responsibility for the *Mechanics*. Audio feedback (clicks, ticks) is MANDATORY for every interaction.
+
+## 2. ENGINEERING PRINCIPLES
+- **No Frameworks**: We build on the *Sovereign Core* (Vanilla JS).
+- **Single Canvas**: The experience should feel like a single, heavy machine overlay (`100vh`, `overflow-hidden` where possible).
+- **Persistence**: The state of the machine (Chat logs, Location) must be etched into `localStorage`.
+- **Audio Feedback**: Silence is death. The machine must sing (Audio API).
+
+## 3. PROTOCOL
+- Upon receiving a directive, the Triumvirate convenes instantly.
+- Code changes are absolute.
+- `git push` is the final seal of completion.
